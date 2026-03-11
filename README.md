@@ -16,8 +16,8 @@
 
 ### 1. 레포지토리 클론
 ```bash
-git clone <repository-url>
-cd tomorrow-weather-briefing-bot
+git clone https://github.com/본인아이디/tomorrow-weather-bot.git
+cd tomorrow-weather-bot
 ```
 
 ### 2. 패키지 설치
