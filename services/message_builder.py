@@ -18,18 +18,18 @@ class MessageBuilder:
         
         # 오늘 날씨
         lines.append(f"📅 <b>오늘 ({format_date_korean(today.date_str)})</b>")
-        lines.append(f"🌡️ 최고: {format_temp(today.max_temp)} / 최저: {format_temp(today.min_temp)}")
-        lines.append(f"💧 강수량: {today.rn1}mm (확률: {today.pop}%)\n")
+        lines.append(f"🌡️ 최고 {format_temp(today.max_temp)} / 최저 {format_temp(today.min_temp)}")
+        lines.append(f"💧 강수량 {today.rn1}mm (확률 {today.pop}%)\n")
         
         # 내일 날씨
         lines.append(f"📅 <b>내일 ({format_date_korean(tomorrow.date_str)})</b>")
-        lines.append(f"🌡️ 최고: {format_temp(tomorrow.max_temp)} / 최저: {format_temp(tomorrow.min_temp)}")
-        lines.append(f"💧 강수량: {tomorrow.rn1}mm (확률: {tomorrow.pop}%)")
+        lines.append(f"🌡️ 최고 {format_temp(tomorrow.max_temp)} / 최저 {format_temp(tomorrow.min_temp)}")
+        lines.append(f"💧 강수량 {tomorrow.rn1}mm (확률 {tomorrow.pop}%)")
         
         if air:
-            lines.append(f"🔹 미세먼지: 미세({air.pm10_grade}/{air.pm10_value}), 초미세({air.pm25_grade}/{air.pm25_value})\n")
+            lines.append(f"🌫️ 미세먼지: 미세({air.pm10_grade}/{air.pm10_value}), 초미세({air.pm25_grade}/{air.pm25_value})\n")
         else:
-            lines.append("🔹 미세먼지: 정보 없음\n")
+            lines.append("🌫️ 미세먼지: 정보 없음\n")
             
         # 비교 부분
         lines.append("🗣️ <b>오늘 vs 내일 비교</b>")

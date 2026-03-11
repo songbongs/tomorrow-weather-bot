@@ -13,33 +13,33 @@ class ClothingAdvisor:
         
         # 아침 기온 비교
         if morning_diff <= -3:
-            advices.append("아침은 오늘보다 더 쌀쌀하니 겉옷을 준비하세요.")
+            advices.append("아침에 꽤 쌀쌀해요! 겉옷 꼭 챙기세요 🧥")
         elif morning_diff >= 3:
-            advices.append("아침은 오늘보다 덜 춥겠어요.")
+            advices.append("아침은 오늘보다 포근할 거예요 😊")
 
         # 낮 기온 비교
         if day_diff >= 2:
-            advices.append("낮에는 오늘보다 조금 더 가볍게 입어도 괜찮아요.")
+            advices.append("낮에는 좀 더 가볍게 입어도 괜찮아요 👍")
         elif day_diff <= -2:
-            advices.append("낮에도 쌀쌀할 수 있으니 따뜻하게 챙겨 입으세요.")
+            advices.append("낮에도 쌀쌀하니 따뜻하게 입으세요 🧣")
 
         # 저녁 기온 비교
         if evening_diff <= -2:
-            advices.append("저녁에는 오늘보다 서늘할 수 있어요.")
+            advices.append("저녁엔 오늘보다 서늘해요, 겉옷 챙기세요!")
             
         # 강수 여부
         tomorrow = compare_result.tomorrow_weather
         if tomorrow.pop >= 40 or tomorrow.pty > 0 or tomorrow.rn1 > 0:
-            advices.append("우산을 챙기세요. (비/눈 예보 있음)")
+            advices.append("우산 챙기세요! ☂️ (비/눈 예보 있어요)")
             
         # 미세먼지
         air = compare_result.tomorrow_air_quality
         if air:
             if air.pm10_grade in ["나쁨", "매우나쁨"] or air.pm25_grade in ["나쁨", "매우나쁨"]:
-                advices.append("마스크를 챙기세요. (공기질 나쁨 이상)")
+                advices.append("마스크 챙기세요! 😷 (공기가 안 좋아요)")
 
         # 기본적인 조언이 없는 경우
         if not advices:
-            advices.append("오늘과 비슷한 착장이면 충분할 것 같아요.")
+            advices.append("오늘이랑 비슷하게 입으면 딱이에요! 👌")
             
         return advices

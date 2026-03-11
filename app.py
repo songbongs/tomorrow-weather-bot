@@ -9,7 +9,7 @@ from services.location_service import LocationService
 from services.weather_merge_service import WeatherMergeService
 from services.compare_service import CompareService
 from services.message_builder import MessageBuilder
-from utils.date_utils import get_today_str, get_tomorrow_str, get_base_date_time_for_short_term
+from utils.date_utils import get_today_str, get_tomorrow_str, get_base_date_time_for_short_term, get_base_date_time_for_today_minmax
 from utils.logger import get_logger
 
 logger = get_logger("app")
@@ -36,12 +36,24 @@ def main():
     tomorrow_str = get_tomorrow_str()
     base_date, base_time = get_base_date_time_for_short_term()
     
+    # 오늘의 TMX/TMN(일 최고·최저기온) 확보를 위한 0200 발표시각
+    today_minmax_date, today_minmax_time = get_base_date_time_for_today_minmax()
+    
     for loc in locations:
         try:
             logger.info(f"Processing location: {loc.name}")
             
-            # 1. 기상청 단기예보 조회
+            # 1. 기상청 단기예보 조회 (최신 발표시각)
             items = kma_client.get_forecast(loc.nx, loc.ny, base_date, base_time)
+            
+            # 1-1. 오늘 TMX/TMN 확보를 위한 0200 발표시각 추가 조회
+            if base_time != "0200":
+                try:
+                    items_0200 = kma_client.get_forecast(loc.nx, loc.ny, today_minmax_date, today_minmax_time)
+                    items = items + items_0200  # 두 응답을 합쳐서 TMX/TMN 확보
+                    logger.info(f"[{loc.name}] 0200 발표 예보 추가 조회 완료 (TMX/TMN 확보)")
+                except Exception as e:
+                    logger.warning(f"[{loc.name}] 0200 예보 추가 조회 실패 (fallback 사용): {e}")
             
             # 2. 오늘 날씨 요약 추출
             today_weather = weather_merger.parse_forecast(today_str, True, items)

@@ -43,6 +43,22 @@ def get_base_date_time_for_short_term():
                 base_time = bt
                 
     return base_date, base_time
+
+def get_base_date_time_for_today_minmax():
+    """
+    오늘의 TMX/TMN(일 최고·최저기온) 확보용 base_date, base_time 반환.
+    0200 발표 예보에는 오늘 하루 전체의 TMX/TMN이 포함됩니다.
+    새벽 02:10 이전이라면 전날 0200을 반환합니다.
+    """
+    now = get_seoul_time()
+    current_time_int = int(now.strftime("%H%M"))
+
+    if current_time_int < 210:
+        base_date = (now - timedelta(days=1)).strftime("%Y%m%d")
+    else:
+        base_date = now.strftime("%Y%m%d")
+
+    return base_date, "0200"
 def format_date_korean(date_str: str) -> str:
     """YYYYMMDD -> YYYY.MM.DD (요일)"""
     dt = datetime.strptime(date_str, "%Y%m%d")
