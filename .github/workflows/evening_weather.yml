@@ -1,0 +1,34 @@
+name: Evening Weather Briefing
+
+on:
+  schedule:
+    # 한국시간 20:15 = UTC 11:15
+    - cron: '15 11 * * *'
+  workflow_dispatch: # 수동 실행 지원
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Run app.py
+        env:
+          KMA_SERVICE_KEY: ${{ secrets.KMA_SERVICE_KEY }}
+          AIRKOREA_SERVICE_KEY: ${{ secrets.AIRKOREA_SERVICE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          LOCATIONS_JSON: ${{ secrets.LOCATIONS_JSON }}
+          LOCATIONS: ${{ secrets.LOCATIONS }}
+          TIMEZONE: "Asia/Seoul"
+        run: python app.py
