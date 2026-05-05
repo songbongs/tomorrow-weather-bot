@@ -156,3 +156,6 @@ GitHub 저장소의 `Settings` -> `Secrets and variables` -> `Actions`에 아래
 **[해결 방법]**
 공공데이터포털(data.go.kr) 홈페이지에 로그인 -> 마이페이지 -> 오픈API -> 개발계정에 들어가서 기상청과 에어코리아 API 각각 **[연장신청]** 버튼만 눌러주시면 됩니다.
 **💡 중요:** 연장을 해도 기존의 부여된 API 키 값은 똑같이 유지되므로, `.env` 파일이나 깃허브(GitHub Actions) **코드는 단 한 글자도 수정하실 필요가 없습니다.** 연장 버튼 클릭 즉시 다시 예전처럼 정상 작동합니다!
+
+
+<!-- 운영 확인: 2026-05-05 GitHub Actions scheduled workflow 유지 확인 -->
