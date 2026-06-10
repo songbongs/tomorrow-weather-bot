@@ -39,6 +39,15 @@ def main():
     # 오늘의 TMX/TMN(일 최고·최저기온) 확보를 위한 0200 발표시각
     today_minmax_date, today_minmax_time = get_base_date_time_for_today_minmax()
     
+    # 4. 내일 대기질 예보 조회 (전국 단위 1회 호출)
+    air_forecast_items = []
+    try:
+        logger.info("대기질 예보 데이터 수집 중...")
+        air_forecast_items = air_client.get_air_quality_forecast(today_str)
+        logger.info(f"대기질 예보 데이터 수집 완료 ({len(air_forecast_items)}건)")
+    except Exception as e:
+        logger.error(f"대기질 예보 데이터 수집 실패: {e}")
+        
     for loc in locations:
         try:
             logger.info(f"Processing location: {loc.name}")
@@ -62,13 +71,17 @@ def main():
             tomorrow_weather = weather_merger.parse_forecast(tomorrow_str, False, items)
             logger.info(f"[{loc.name}] 날씨 수집 완료")
             
-            # 4. 내일 공기질 조회 (AirKorea)
+            # 4. 내일 공기질 추출
             try:
-                air_data = air_client.get_air_quality(loc.station)
-                tomorrow_air = compare_service.parse_air_quality(air_data)
-                logger.info(f"[{loc.name}] 공기질 수집 완료")
+                region = compare_service.get_forecast_region_from_location(loc.name)
+                tomorrow_air = compare_service.parse_air_quality_forecast(air_forecast_items, region, tomorrow_str)
+                if tomorrow_air:
+                    logger.info(f"[{loc.name}] 대기질 예보 추출 완료 (권역: {region})")
+                else:
+                    logger.warning(f"[{loc.name}] 대기질 예보 데이터 없음 (fallback 사용)")
+                    tomorrow_air = None
             except Exception as e:
-                logger.warning(f"[{loc.name}] 공기질 데이터 수집 실패: {e}")
+                logger.warning(f"[{loc.name}] 대기질 예보 처리 실패: {e}")
                 tomorrow_air = None # fallback
                 
             # 5. 비교 및 조언 생성

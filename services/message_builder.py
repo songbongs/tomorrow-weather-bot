@@ -27,7 +27,10 @@ class MessageBuilder:
         lines.append(f"💧 강수량 {tomorrow.rn1}mm (확률 {tomorrow.pop}%)")
         
         if air:
-            lines.append(f"🌫️ 미세먼지: 미세({air.pm10_grade}/{air.pm10_value}), 초미세({air.pm25_grade}/{air.pm25_value})\n")
+            if air.pm10_value == "-" and air.pm25_value == "-":
+                lines.append(f"🌫️ 미세먼지: 미세({air.pm10_grade}), 초미세({air.pm25_grade})\n")
+            else:
+                lines.append(f"🌫️ 미세먼지: 미세({air.pm10_grade}/{air.pm10_value}), 초미세({air.pm25_grade}/{air.pm25_value})\n")
         else:
             lines.append("🌫️ 미세먼지: 정보 없음\n")
             

@@ -10,6 +10,7 @@ logger = get_logger("airkorea_client")
 
 class AirKoreaClient:
     BASE_URL = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty"
+    FORECAST_URL = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMinuDustFrcstDspth"
     
     @retry_request(max_retries=3, delay=2.0)
     def get_air_quality(self, station_name: str) -> dict:
@@ -39,3 +40,33 @@ class AirKoreaClient:
             return {}
             
         return items[0]
+
+    @retry_request(max_retries=3, delay=2.0)
+    def get_air_quality_forecast(self, search_date: str) -> list:
+        """대기질 예보 정보 조회"""
+        formatted_date = search_date
+        if len(search_date) == 8 and search_date.isdigit():
+            formatted_date = f"{search_date[:4]}-{search_date[4:6]}-{search_date[6:8]}"
+            
+        params = {
+            "serviceKey": AIRKOREA_SERVICE_KEY,
+            "returnType": "json",
+            "numOfRows": "100",
+            "pageNo": "1",
+            "searchDate": formatted_date,
+            "ver": "1.1"
+        }
+        
+        logger.info(f"Calling AirKorea Forecast API for date: {formatted_date}")
+        response = requests.get(self.FORECAST_URL, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        if data.get("response", {}).get("header", {}).get("resultCode") != "00":
+            error_msg = data.get("response", {}).get("header", {}).get("resultMsg", "Unknown Error")
+            logger.error(f"AirKorea Forecast API Error: {error_msg}")
+            raise ValueError(f"AirKorea Forecast API Error: {error_msg}")
+            
+        return data.get("response", {}).get("body", {}).get("items", [])
+

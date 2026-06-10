@@ -12,20 +12,52 @@ class ClothingAdvisor:
         evening_diff = compare_result.evening_diff
         
         # 아침 기온 비교
-        if morning_diff <= -3:
-            advices.append("아침에 꽤 쌀쌀해요! 겉옷 꼭 챙기세요 🧥")
-        elif morning_diff >= 3:
-            advices.append("아침은 오늘보다 포근할 거예요 😊")
+        tomorrow = compare_result.tomorrow_weather
+        if tomorrow.morning_temp is not None:
+            if tomorrow.morning_temp <= 5: # 추운 겨울 날씨
+                if morning_diff <= -3:
+                    advices.append("아침에 오늘보다 더 추워져요! 두꺼운 패딩 필수 ❄️")
+                elif morning_diff >= 3:
+                    advices.append("아침 기온이 오늘보다 오르지만, 여전히 추우니 따뜻하게 입으세요 🧣")
+                else:
+                    advices.append("아침에 꽤 쌀쌀해요! 겉옷 꼭 챙기세요 🧥")
+            elif tomorrow.morning_temp >= 22: # 더운 여름 날씨
+                if morning_diff >= 3:
+                    advices.append("아침부터 오늘보다 더워요, 가벼운 옷차림이 좋습니다 ☀️")
+            else: # 일반 날씨
+                if morning_diff <= -3:
+                    advices.append("아침에 꽤 쌀쌀해요! 겉옷 꼭 챙기세요 🧥")
+                elif morning_diff >= 3:
+                    advices.append("아침은 오늘보다 포근할 거예요 😊")
 
         # 낮 기온 비교
-        if day_diff >= 2:
-            advices.append("낮에는 좀 더 가볍게 입어도 괜찮아요 👍")
-        elif day_diff <= -2:
-            advices.append("낮에도 쌀쌀하니 따뜻하게 입으세요 🧣")
+        if tomorrow.day_temp is not None:
+            if tomorrow.day_temp <= 10: # 낮에도 추운 경우
+                if day_diff <= -2:
+                    advices.append("낮에도 오늘보다 기온이 내려가 쌀쌀해요 🧣")
+                else:
+                    advices.append("낮에도 쌀쌀하니 옷차림 든든히 하세요 🧥")
+            elif tomorrow.day_temp >= 28: # 낮에 폭염/더운 경우
+                if day_diff >= 2:
+                    advices.append("낮에 오늘보다 더 더워집니다! 얇은 반팔 입으세요 👕")
+                else:
+                    advices.append("낮에는 더운 여름 날씨가 이어져요 ☀️")
+            else: # 일반 날씨
+                if day_diff >= 2:
+                    advices.append("낮에는 좀 더 가볍게 입어도 괜찮아요 👍")
+                elif day_diff <= -2:
+                    advices.append("낮에도 쌀쌀하니 따뜻하게 입으세요 🧣")
 
         # 저녁 기온 비교
-        if evening_diff <= -2:
-            advices.append("저녁엔 오늘보다 서늘해요, 겉옷 챙기세요!")
+        if tomorrow.evening_temp is not None:
+            if tomorrow.evening_temp <= 8:
+                if evening_diff <= -2:
+                    advices.append("저녁에는 오늘보다 훨씬 더 쌀쌀해져요 🧣")
+                else:
+                    advices.append("저녁에는 꽤 추워지니 도톰한 외투를 입으세요 🧥")
+            else:
+                if evening_diff <= -2:
+                    advices.append("저녁엔 오늘보다 서늘해요, 겉옷 챙기세요!")
             
         # 강수 여부
         tomorrow = compare_result.tomorrow_weather
